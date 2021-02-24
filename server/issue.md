@@ -1,6 +1,8 @@
-I based my code on [formidable/examples/with-express.js](https://github.com/node-formidable/formidable/blob/master/examples/with-express.js).
+Code is based on [formidable/examples/with-express.js](https://github.com/node-formidable/formidable/blob/master/examples/with-express.js).
 
-I finding that when using the below code to upload 2 .csv files
+Full example at: https://github.com/klequis/formidable-express-react-ex
+
+I am finding that when using the below code to upload 2 .csv files
 
 - both files are uploaded (good)
 - files are uploaded to `/tmp` (not good)
@@ -25,7 +27,7 @@ form.multiples = true
 form.uploadDir = uploadDir
 ```
 
-## Try 1
+## Case 1
 
 ### Code
 
@@ -66,7 +68,7 @@ const form = formidable({
 }
 ```
 
-## Try 2
+## Case 2
 
 ### Code
 
