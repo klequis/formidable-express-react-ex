@@ -1,50 +1,65 @@
 'use strict'
 
-// const express = require('express')
 import express from 'express'
-// const formidable = require('formidable')
 import formidable from 'formidable'
-// const path = require('path')
 import path from 'path'
-// const cors = require('cors')
 import cors from 'cors'
-// import fse from 'fs-extra'
-
+import * as R from 'ramda'
+import fse from 'fs-extra'
 const app = express()
 app.use(cors())
 
-const moveToPath = (origPath) => {
-  
+const moveFiles = async (uploadDir, files) => {
+  const all = Promise.all(
+    files.map(async (f) => {
+      return fse.move(f.path, path.join(uploadDir, f.name))
+    })
+  )
+  return all
 }
 
-app.post('/api/upload', async (req, res, next) => {
-  console.log('req.headers', req.headers)
+app.post('/api/upload', (req, res, next) => {
   const uploadDir = path.join(__dirname, '../uploads')
-  // CASE 1: 2 files, wrong uploadDir -->
+
   const form = formidable({
-    multiples: true,
-    uploadDir: uploadDir
+    multiples: true
+    // uploadDir: uploadDir - doesn't work :(
   })
-  // <-- doesn't work
 
-  // CASE 2: Correct uploadDir but only 1 file -->
-  // const form = formidable()
-  // form.multiples = true
-  // form.uploadDir = uploadDir
-  // <-- works
-
-  console.log('form.uploadDir', form.uploadDir)
-
-  form.parse(req, (err, fields, files) => {
+  form.parse(req, async (err, fields, files) => {
     if (err) {
       next(err)
       return
     }
+    // console.log('type', R.type(files.uploadedFiles))
+    // console.log('files.uploadFiles', files.uploadedFiles)
+
+    // files.uploadedFiles.map((f) => {
+    //   console.log({
+    //     path: f.path,
+    //     name: f.name,
+    //     type: f.type
+    //   })
+    // })
+
+    // currPath = f.path
+
+    // const moves = R.map(async (f) => {
+    //   console.log({
+    //     path: f.path,
+    //     name: f.name,
+    //     type: f.type
+    //   })
+    //   return
+    // }, files.uploadedFiles)
+    // const m = await Promise.all([moves])
+    const m = await moveFiles(uploadDir, files.uploadedFiles)
+    console.log('m', m)
     // need to do fse.move with promise.all
-    R.map(f => await fse.move(f.path, ))
-    const movedFiles = promise.all([
-      fse.move()
-    ])
+    // R.map(f => await fse.move(f.path, ))
+    // const movedFiles = promise.all([
+    //   fse.move()
+    // ])
     res.json({ fields, files, uploadDir })
   })
 })
