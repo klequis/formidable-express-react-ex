@@ -28,10 +28,18 @@ export const App = () => {
       formData.append('uploadedFiles', f)
     })
 
-    const r = await fetch('http://localhost:4040/api/upload', {
+    // -- ex
+    // const r = await fetch('http://localhost:3030/api/upload', {
+    //   method: 'POST',
+    //   body: formData
+    // })
+
+    // pm-merge
+    const r = await fetch('http://localhost:3030/api/uploadFiles/upload', {
       method: 'POST',
       body: formData
     })
+
     const j = await r.json()
     console.log('j', j)
     const { dirname, fields, files, uploadDir } = j
